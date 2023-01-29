@@ -1,6 +1,6 @@
-import { login } from './utils';
-import './index.css';
-import { useState } from 'react';
+import { login } from "./utils";
+import "./index.css";
+import { useState } from "react";
 
 // Instruções:
 // * Você tem um formulário de login INCOMPLETO
@@ -15,23 +15,65 @@ import { useState } from 'react';
 // todo - Mostre um alerta caso o login seja efetuado com sucesso (javascript alert). Investigue a função login() para entender como ter sucesso na requisição.
 
 export default function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [IsRequesting, setIsRequesting] = useState(false);
+
+  const handleEmail = (event) => {
+    const { value } = event.target;
+    setEmail(value);
+  };
+  const handlePassword = (event) => {
+    const { value } = event.target;
+    setPassword(value);
+  };
+  const handleSubmit = () => {
+    let values = { email: email, password: password };
+    login(values);
+    setIsRequesting(true);
+    setError(null)
+
+
+      .then(() => alert("Login efetuado com sucesso"))
+      .catch((error) => setError(error.message))
+      .finally(() => setIsRequesting(false));
+  };
+
   return (
-    <div className='wrapper'>
-      <div className='login-form'>
+    <div className="wrapper">
+      <div className="login-form">
         <h1>Login Form 🐞</h1>
         {/* Coloque a mensagem de erro de login na div abaixo. Mostre a div somente se houver uma mensagem de erro. */}
-        <div className='errorMessage'></div>
-        <div className='row'>
-          <label htmlFor={'email'}>Email</label>
-          <input id={'email'} type={'email'} autoComplete='off' />
+        {error && <div className="errorMessage">{error}</div>}
+
+        <div className="row">
+          <label htmlFor={"email"}>Email</label>
+          <input
+            id={"email"}
+            type={"email"}
+            autoComplete="off"
+            value={email}
+            onChange={handleEmail}
+          />
         </div>
-        <div className='row'>
-          <label htmlFor={'password'}>Password</label>
-          <input id={'password'} type={'password'} />
+        <div className="row">
+          <label htmlFor={"password"}>Password</label>
+          <input
+            id={"password"}
+            type={"password"}
+            value={password}
+            onChange={handlePassword}
+          />
         </div>
 
-        <div className='button'>
-          <button>Login</button>
+        <div className="button">
+          <button
+            onClick={handleSubmit}
+            disabled={email === "" || password.length < 6 || IsRequesting}
+          >
+            Login
+          </button>
         </div>
       </div>
     </div>
